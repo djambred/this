@@ -24,21 +24,10 @@ class UserResource extends Resource
 
     protected static ?int $navigationSort = -2;
 
-    public static function canViewAny(): bool
-    {
-        return auth()->user()?->hasRole('super_admin');
-    }
-
-    public static function canCreate(): bool
-    {
-        return auth()->user()?->hasRole('super_admin');
-    }
-
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
-
 
     public static function getGloballySearchableAttributes(): array
     {

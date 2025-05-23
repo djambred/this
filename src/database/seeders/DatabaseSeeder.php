@@ -18,6 +18,12 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             InstructorSeeder::class,
             StudentSeeder::class,
+            CourseSeeder::class,
+            JargonSeeder::class,
+            LogoSeeder::class,
+            FooterLinkSeeder::class,
+            SeoSeeder::class,
+            PageConfigSeeder::class,
         ]);
     }
 }

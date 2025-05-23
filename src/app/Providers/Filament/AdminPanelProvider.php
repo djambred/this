@@ -2,6 +2,11 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Resources\FooterLinkResource;
+use App\Filament\Admin\Resources\JargonResource;
+use App\Filament\Admin\Resources\LogoResource;
+use App\Filament\Admin\Resources\PageConfigResource;
+use App\Filament\Admin\Resources\SeoResource;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -111,6 +116,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->resources([
                 config('filament-logger.activity_resource'),
+                SeoResource::class,
+                LogoResource::class,
+                JargonResource::class,
+                PageConfigResource::class,
+                FooterLinkResource::class,
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->middleware([
