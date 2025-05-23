@@ -18,7 +18,8 @@ class CourseSeeder extends Seeder
                 'title' => 'Fullstack Developer',
                 'description' => 'Belajar Fullstack Developer',
                 'image' => '',
-                'link' => 'https://ptjin.co.id'
+                'link' => 'https://ptjin.co.id',
+                'instructor_id' => 2,
             ]);
         }
     }

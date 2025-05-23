@@ -25,4 +25,8 @@ class Instructor extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function courses()
+    {
+        return $this->hasMany(Course::class);
+    }
 }

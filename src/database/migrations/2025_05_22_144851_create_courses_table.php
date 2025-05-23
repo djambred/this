@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('description');
             $table->string('image');
             $table->string('link');
+            $table->foreignId('instructor_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
     }
