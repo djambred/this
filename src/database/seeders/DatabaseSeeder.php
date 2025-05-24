@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
             FooterLinkSeeder::class,
             SeoSeeder::class,
             PageConfigSeeder::class,
+            ModulesSeeder::class,
+            BatchSeeder::class,
         ]);
     }
 }

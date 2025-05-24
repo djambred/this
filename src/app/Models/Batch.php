@@ -5,20 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Modules extends Model
+class Batch extends Model
 {
     use HasFactory;
-    protected $table = 'modules';
+    protected $table = 'batches';
     protected $fillable = [
         'name',
-        'video',
-        'file',
-        'course_id'
+        'course_id',
     ];
 
-    public function course()
-    {
+    public function course(){
         return $this->belongsTo(Course::class);
     }
-
 }

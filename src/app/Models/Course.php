@@ -35,6 +35,8 @@ class Course extends Model
     {
         return $this->hasMany(Modules::class);
     }
-
+    public function batch(){
+        return $this->belongsTo(Batch::class);
+    }
 
 }

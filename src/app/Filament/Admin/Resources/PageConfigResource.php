@@ -44,6 +44,7 @@ class PageConfigResource extends Resource
                     ->rows(3)
                     ->required(),
                 Forms\Components\TextInput::make('url')
+                    ->required()
                     ->label('URL'),
                 Forms\Components\FileUpload::make('image')
                     ->label('Image')
