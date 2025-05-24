@@ -29,8 +29,8 @@ class Student extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function courses()
+    public function batches()
     {
-        return $this->belongsToMany(Course::class);
+        return $this->belongsTo(Batch::class);
     }
 }

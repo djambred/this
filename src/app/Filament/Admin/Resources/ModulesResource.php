@@ -20,6 +20,10 @@ class ModulesResource extends Resource
     protected static ?string $model = Modules::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Learning System';
+    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?int $navigationSort = -2;
+
     public static function canAccess(): bool
     {
         return Auth::user()?->hasAnyRole(['super_admin', 'student', 'instructor']);

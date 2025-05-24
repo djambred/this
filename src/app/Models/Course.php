@@ -27,16 +27,12 @@ class Course extends Model
     {
         return $this->belongsTo(Instructor::class);
     }
-    public function students()
-    {
-        return $this->belongsToMany(Student::class);
-    }
     public function modules()
     {
         return $this->hasMany(Modules::class);
     }
-    public function batch(){
-        return $this->belongsTo(Batch::class);
+    public function batches(){
+        return $this->hasMany(Batch::class);
     }
 
 }

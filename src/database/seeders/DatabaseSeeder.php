@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Assessment;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -26,6 +27,8 @@ class DatabaseSeeder extends Seeder
             PageConfigSeeder::class,
             ModulesSeeder::class,
             BatchSeeder::class,
+            AssessmentSeeder::class,
+            ScheduleSeeder::class,
         ]);
     }
 }
