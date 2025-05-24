@@ -8,31 +8,69 @@ use Livewire\Component;
 
 class ShowRegisterPage extends Component
 {
-    public Batch $batch;
+    public $batchId;
+    public $batch;
 
-    // Any other public properties, e.g. form inputs
+    // Form inputs
     public $name;
     public $email;
+    public $phone;
 
-    public function mount(Batch $batch)
+    public $paymentAmount;
+
+    public function mount($batchId)
     {
-        $this->batch = $batch;
+        $this->batchId = $batchId;
+        $this->batch = Batch::with('course')->findOrFail($batchId);
+
+        // Set price or get from batch or course
+        $this->paymentAmount = 100;
     }
 
-    // This is the method you need
-    public function register()
+    protected $rules = [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'phone' => 'nullable|string|max:50',
+    ];
+
+    public function payAndRegister()
     {
-        // Your registration logic here
+        //$this->validate();
 
-        // For example, assign role 'student' to logged in user
-        $user = Auth::user();
+        // try {
+        //     $pending = PendingRegistration::create([
+        //         'batch_id' => $this->batchId,
+        //         'name' => $this->name,
+        //         'email' => $this->email,
+        //         'phone' => $this->phone,
+        //         'status' => 'pending',
+        //         'amount' => $this->paymentAmount,
+        //         'payment_method' => 'midtrans',
+        //     ]);
 
-        if ($user) {
-            $user->assignRole('student'); // Using Spatie role package or similar
-            // Additional logic to attach batch to user, save registration, etc.
-        }
+        //     // Simulate payment process here (replace with real payment integration)
+        //     // If payment success:
+        //     $pending->update([
+        //         'status' => 'confirmed',
+        //         'payment_transaction_id' => 'TXN' . time(),
+        //     ]);
 
-        session()->flash('message', 'Successfully registered!');
+        //     $registration = Registration::create([
+        //         'batch_id' => $this->batchId,
+        //         'name' => $this->name,
+        //         'email' => $this->email,
+        //         'phone' => $this->phone,
+        //         'registered_at' => now(),
+        //         'status' => 'active',
+        //     ]);
+
+            $this->reset(['name', 'email', 'phone']);
+
+            session()->flash('success', 'Registration and payment successful!');
+
+        // } catch (Exception $e) {
+        //     $this->addError('payment', 'Payment failed: ' . $e->getMessage());
+        // }
     }
 
     public function render()
