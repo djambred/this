@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Assessment;
+use App\Models\Product;
 use App\Models\User;
+use GuzzleHttp\Handler\Proxy;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -29,6 +31,7 @@ class DatabaseSeeder extends Seeder
             BatchSeeder::class,
             AssessmentSeeder::class,
             ScheduleSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

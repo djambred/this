@@ -1,8 +1,9 @@
 @php
     use App\Models\Front\PageConfig;
-    use App\Models\Course;
+    use App\Models\Product;
+
     $pageconf = PageConfig::first();
-    $courses = Course::all();
+    $products = Product::with(['batch.course', 'batch.schedules'])->get();
 @endphp
 
 <main>
@@ -38,24 +39,42 @@
                 <p>{{ $pageconf->detail_services }}</p>
               </div>
             </div>
-            @foreach($courses as $index => $course)
+            @foreach($products as $index => $product)
                 <div class="col-lg-4 col-md-6 service-item">
-                <a class="text-black" href="{{ $course->link }}" target="_blank" rel="noopener noreferrer">
-                    <div class="block">
-                    <span class="colored-box text-center h3 mb-4">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                    @if($course->image)
-                        <img src="{{ asset('storage/' . $course->image) }}"
-                            alt="{{ $course->name }}"
-                            class="img-fluid mb-3 w-100"
-                            style="height: 200px; object-fit: cover; border-radius: 0.5rem;" />
-                    @endif
-                    <h3 class="mb-3 service-title">{{ $course->name }}</h3>
-                    <p class="mb-0 service-description">{{ $course->description }}</p>
-                    </div>
-                </a>
-                </div>
-                @endforeach
+                    <a class="text-black" href="{{ route('register.batch.show', $product->batch->id) }}" target="_blank" rel="noopener noreferrer">
+                        <div class="block">
+                            <span class="colored-box text-center h3 mb-4">
+                                {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                            </span>
 
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}"
+                                    alt="{{ $product->course->title ?? 'Course' }}"
+                                    class="img-fluid mb-3 w-100"
+                                    style="height: 200px; object-fit: cover; border-radius: 0.5rem;" />
+                            @endif
+
+                            <h3 class="mb-3 service-title">{{ $product->batch->name ?? '-' }}</h3>
+                            <p class="mb-0 service-description">{{ $product->batch->course->title ?? 'Course' }}Course</p>
+
+                            {{-- Show related schedules --}}
+                            @if($product->batch && $product->batch->schedules->isNotEmpty())
+                                <ul class="mt-2 ps-3">
+                                    @foreach($product->batch->schedules as $schedule)
+                                        <li>
+                                            Location at {{ $schedule->location }}<br>
+                                            {{ \Carbon\Carbon::parse($schedule->start_time)->format('d M Y') }} -
+                                            {{ \Carbon\Carbon::parse($schedule->end_time)->format('d M Y') }}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p class="text-muted mt-2">No schedules available</p>
+                            @endif
+                        </div>
+                    </a>
+                </div>
+            @endforeach
           </div>
         </div>
       </section>

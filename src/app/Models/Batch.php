@@ -22,4 +22,8 @@ class Batch extends Model
     {
         return $this->hasMany(Student::class);
     }
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }
