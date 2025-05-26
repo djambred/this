@@ -20,6 +20,7 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:image" content="{{ asset('storage/' . $seo->og_image) }}">
+<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://app.sandbox.midtrans.com;">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
