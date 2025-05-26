@@ -85,7 +85,7 @@ class ShowRegisterPage extends Component
         // Trigger JS event for Snap
         $this->dispatch ('midtrans:show-snap', ['snapToken' => $snapToken]);
 
-        dd($snapToken);
+        //dd($snapToken);
 
     }
 

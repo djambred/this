@@ -49,20 +49,13 @@
 </section>
 </main>
 
-@push('scripts')
-<script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+@push('script')
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
 <script>
-    window.addEventListener('midtrans:show-snap', function (event) {
-        const snapToken = event.detail.snapToken;
-
-        if (!snapToken) {
-            alert('SnapToken missing!');
-            return;
-        }
-
+    Livewire.on('midtrans:show-snap', ({ snapToken }) => {
         window.snap.pay(snapToken, {
             onSuccess: function(result) {
-                Livewire.dispatch('midtrans:payment-success', result);
+                Livewire.emit('midtrans:payment-success', result);
             },
             onPending: function(result) {
                 alert('Payment pending. Please wait...');
