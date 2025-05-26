@@ -122,6 +122,7 @@ class ShowRegisterPage extends Component
     {
         return view('livewire.show-register-page', [
             'product' => Product::with('batch.course')->findOrFail($this->productId),
+            'paymentAmount' => $this->paymentAmount,
         ]);
     }
 }
