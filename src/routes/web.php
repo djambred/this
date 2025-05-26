@@ -24,4 +24,4 @@ Route::get('/', ShowHomePage::class )->name('home');
 
 Route::get('/register/{productId}', ShowRegisterPage::class)->name('register');
 
-Route::post('/get-snap-token', [MidtransController::class, 'getSnapToken']);
+Route::post('/midtrans/snap-token', [\App\Http\Controllers\MidtransController::class, 'getSnapToken'])->name('midtrans.snap-token');
