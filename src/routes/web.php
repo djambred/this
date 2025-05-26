@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MidtransController;
 use App\Livewire\ShowHomePage;
 use App\Livewire\ShowRegisterPage;
 use Illuminate\Support\Facades\Route;
@@ -21,4 +22,6 @@ Livewire::setScriptRoute(function ($handle) {
 */
 Route::get('/', ShowHomePage::class )->name('home');
 
-Route::get('/register/{productId}', ShowRegisterPage::class)->name('register.batch');
+Route::get('/register/{productId}', ShowRegisterPage::class)->name('register');
+
+Route::post('/get-snap-token', [MidtransController::class, 'getSnapToken']);

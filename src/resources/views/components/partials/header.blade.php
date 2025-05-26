@@ -10,6 +10,7 @@
 <meta name="keywords" content="{{ $seo->keywords }}">
 <meta name="author" content="djambred">
 <meta name="robots" content="{{ $seo->robots }}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <!-- Canonical -->
 <link rel="canonical" href="{{ $seo->canonical_url }}">

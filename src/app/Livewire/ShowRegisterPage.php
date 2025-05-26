@@ -5,30 +5,30 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Product;
 use App\Models\Student;
-use Illuminate\Support\Facades\Http;
+use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Services\CreateSnapTokenService;
 
 class ShowRegisterPage extends Component
 {
-    protected $listeners = ['midtrans:payment-success' => 'handlePaymentSuccess'];
-
     public int $productId;
-
-    public string $name = '';
-    public string $student_id = '';
-    public string $student_origin = '';
-    public string $email = '';
-    public string $phone = '';
-    public string $address = '';
-    public string $github_name = '';
-    public string $github_url = '';
-
     public int $paymentAmount = 0;
+
+    public string $name = '', $student_id = '', $student_origin = '', $email = '', $phone = '', $address = '', $github_name = '', $github_url = '';
+
+    protected $listeners = ['midtrans:payment-success' => 'handlePaymentSuccess'];
 
     public function mount($productId)
     {
         $this->productId = $productId;
         $this->paymentAmount = Product::findOrFail($productId)->price ?? 100000;
+    }
+
+    public function updatedGithubName($value)
+    {
+        $this->github_url = "https://github.com/" . trim($value);
     }
 
     public function payAndRegister()
@@ -41,45 +41,52 @@ class ShowRegisterPage extends Component
             'phone' => 'required|string|max:20',
             'address' => 'required|string',
             'github_name' => 'required|string',
-            'github_url' => 'required|url',
         ]);
 
         $product = Product::findOrFail($this->productId);
-        $paymentAmount = $product->price ?? 100000;
-        $orderId = 'BOOTCAMP-' . Str::upper(Str::random(10));
+        $orderId = 'BOOTCAMP-' . strtoupper(Str::random(10));
 
-        $payload = [
-            'transaction_details' => [
-                'order_id' => $orderId,
-                'gross_amount' => $paymentAmount,
-            ],
-            'customer_details' => [
-                'first_name' => $this->name,
-                'email' => $this->email,
-                'phone' => $this->phone,
-            ],
+        // $transaction = [
+        //         'order_id' => $orderId,
+        //         'gross_amount' => $product->price,
+        //         'first_name' => $this->name,
+        //         'email' => $this->email,
+
+        // ];
+        // //dd($transaction);
+        // if (!$product->snap_token) {
+        //     # code...
+        //     $midtrans = new CreateSnapTokenService($transaction);
+        //     $snapToken = $midtrans->getSnapToken();
+        //     $product->update(['snap_token'=>$snapToken]);
+        //     //dd( $product);
+        // } else {
+        //     $snapToken = $product->snap_token;
+        // }
+        // //dd($snapToken);
+        // return $snapToken;
+
+        $order = [
+            'order_id' => $orderId,
+            'gross_amount' => $product->price ?? 100000,
+            'first_name' => $this->name,
+            'email' => $this->email,
         ];
 
-        $response = Http::withBasicAuth(config('midtrans.server_key'), '')
-            ->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $payload);
+        $snapToken = (new CreateSnapTokenService($order))->getSnapToken();
+        //dd($snapToken);
 
-        if ($response->successful()) {
-            $snapToken = $response->json('token') ?? $response->json('snap_token');
+        // Store form data temporarily for use after successful payment
+        session()->put('registration_data', $this->only([
+            'name', 'student_id', 'student_origin', 'email',
+            'phone', 'address', 'github_name', 'github_url'
+        ]));
 
-            if (!$snapToken) {
-                $this->addError('payment', 'Snap token not received from Midtrans.');
-                return;
-            }
+        // Trigger JS event for Snap
+        $this->dispatch ('midtrans:show-snap', ['snapToken' => $snapToken]);
 
-            session()->put('registration_data', $this->only([
-                'name', 'student_id', 'student_origin', 'email',
-                'phone', 'address', 'github_name', 'github_url',
-            ]));
+        dd($snapToken);
 
-            $this->emit('midtrans:show-snap', ['snapToken' => $snapToken]);
-        } else {
-            $this->addError('payment', 'Failed to generate payment token.');
-        }
     }
 
     public function handlePaymentSuccess($result)
@@ -87,21 +94,34 @@ class ShowRegisterPage extends Component
         $data = session()->pull('registration_data');
         $product = Product::findOrFail($this->productId);
 
-        Student::create(array_merge($data, [
+        $student = Student::create([
+            ...$data,
             'batch_id' => $product->batch_id,
             'payment_status' => 'paid',
             'payment_result' => json_encode($result),
-        ]));
+        ]);
 
-        session()->flash('success', 'Payment successful! You have been registered.');
+        $password = Str::random(8);
+
+        $user = User::create([
+            'name' => $student->name,
+            'email' => $student->email,
+            'password' => Hash::make($password),
+        ]);
+
+        $user->assignRole('student');
+
+        Mail::to($user->email)->send(new \App\Mail\SendLoginDetailsMail($user, $password));
+
+        session()->flash('success', 'Payment successful! Check your email for login details.');
+
         return redirect()->to('/');
     }
 
     public function render()
     {
         return view('livewire.show-register-page', [
-            'product' => Product::with(['batch.course', 'batch.schedules'])->findOrFail($this->productId),
-            'paymentAmount' => $this->paymentAmount,
+            'product' => Product::with('batch.course')->findOrFail($this->productId),
         ]);
     }
 }
