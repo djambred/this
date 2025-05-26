@@ -25,3 +25,4 @@ Route::get('/', ShowHomePage::class )->name('home');
 Route::get('/register/{productId}', ShowRegisterPage::class)->name('register');
 
 Route::post('/midtrans/snap-token', [\App\Http\Controllers\MidtransController::class, 'getSnapToken'])->name('midtrans.snap-token');
+Route::post('/midtrans/store-result', [App\Http\Controllers\MidtransController::class, 'storeResult']);

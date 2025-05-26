@@ -6,25 +6,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
-class Assessment extends Model
+class Payment extends Model
 {
     use HasFactory;
-    protected $table = 'assessments';
+    protected $table = 'payments';
     protected $fillable = [
-        'github_repository',
-        'score',
+        'order_id',
+        'product_id',
+        'user_id',
         'status',
-        'student_id',
-        'modules_id',
     ];
 
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-
-    public function modules()
+    public function student()
     {
-        return $this->belongsTo(Modules::class);
+        return $this->hasOne(Student::class);
     }
 }

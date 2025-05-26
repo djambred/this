@@ -45,9 +45,6 @@ class ProductResource extends Resource
                     ->prefix('Rp.'),
                 Forms\Components\FileUpload::make('image')
                     ->image(),
-                Forms\Components\TextInput::make('link')
-                    ->maxLength(255)
-                    ->default(null),
             ]);
     }
 
@@ -68,8 +65,6 @@ class ProductResource extends Resource
                     ->money('Rp.')
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('image'),
-                Tables\Columns\TextColumn::make('link')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
