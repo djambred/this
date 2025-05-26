@@ -23,6 +23,16 @@
                     <input type="text" id="name" wire:model.defer="name" class="form-control shadow-none rounded" />
                     @error('name') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
+                <div class="form-group mb-4 pb-2">
+                    <label for="student_id" class="form-label">Student ID (NIM)</label>
+                    <input type="text" id="student_id" wire:model.defer="student_id" class="form-control shadow-none rounded" />
+                    @error('student_id') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+                <div class="form-group mb-4 pb-2">
+                    <label for="student_origin" class="form-label">Student Origin (Asal Kampus)</label>
+                    <input type="text" id="student_origin" wire:model.defer="student_origin" class="form-control shadow-none rounded" />
+                    @error('student_origin') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
 
                 <div class="form-group mb-4 pb-2">
                     <label for="email" class="form-label">Email</label>
@@ -31,19 +41,61 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="phone" class="form-label">Phone (optional)</label>
+                    <label for="phone" class="form-label">Phone</label>
                     <input type="text" id="phone" wire:model.defer="phone" class="form-control shadow-none rounded" />
                     @error('phone') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
 
-                @error('payment')
-                    <div class="mb-3 text-red-600">{{ $message }}</div>
-                @enderror
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <textarea id="address" wire:model.defer="address" class="form-control shadow-none rounded"></textarea>
+                    @error('address') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="github_name" class="form-label">Github Name</label>
+                    <input type="text" id="github_name" wire:model.defer="github_name" class="form-control shadow-none rounded" />
+                    @error('github_name') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="github_url" class="form-label">Github URL</label>
+                    <input type="text" id="github_url" wire:model.defer="github_url" class="form-control shadow-none rounded" />
+                    @error('github_url') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+                </div>
                 <button type="submit" class="btn btn-primary w-100 rounded">
                     Pay & Register
                 </button>
             </form>
+                @if (session()->has('success'))
+                    <div class="alert alert-success mt-4">{{ session('success') }}</div>
+                @endif
 
+                <!-- Midtrans Snap.js -->
+                @push('scripts')
+                    {{-- <script src="livewire.js"> --}}
+                    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+                            data-client-key="{{ config('midtrans.client_key') }}"></script>
+
+                    <script>
+                        Livewire.on('midtrans:show-snap', ({ snapToken }) => {
+                            window.snap.pay(snapToken, {
+                                onSuccess: function(result) {
+                                    Livewire.dispatch('midtrans:payment-success', result);
+                                },
+                                onPending: function(result) {
+                                    alert('Please complete the payment!');
+                                },
+                                onError: function(result) {
+                                    alert('Payment failed!');
+                                },
+                                onClose: function() {
+                                    alert('You closed the payment popup without finishing.');
+                                }
+                            });
+                        });
+                    </script>
+                @endpush
         </div>
     </section>
 </main>
