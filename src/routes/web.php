@@ -20,4 +20,5 @@ Livewire::setScriptRoute(function ($handle) {
 / END
 */
 Route::get('/', ShowHomePage::class )->name('home');
-Route::get('/register/batch/{batchId}', ShowRegisterPage::class)->name('register.batch.show');
+
+Route::get('/register/{productId}', ShowRegisterPage::class)->name('register.batch');

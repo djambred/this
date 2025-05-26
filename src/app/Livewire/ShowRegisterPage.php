@@ -2,132 +2,106 @@
 
 namespace App\Livewire;
 
-use App\Models\Batch;
-use App\Models\User;
-use App\Models\Student;
-use App\Mail\UserRegisteredMail;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
-use Spatie\Permission\Models\Role;
 use Livewire\Component;
-use Midtrans\Config;
-use Midtrans\Snap;
+use App\Models\Product;
+use App\Models\Student;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class ShowRegisterPage extends Component
 {
-    public $batchId;
-    public $batch;
+    protected $listeners = ['midtrans:payment-success' => 'handlePaymentSuccess'];
 
-    // Form inputs
-    public $student_id;
-    public $student_origin;
-    public $address;
-    public $github_name;
-    public $github_url;
-    public $name;
-    public $email;
-    public $phone;
+    public int $productId;
 
+    public string $name = '';
+    public string $student_id = '';
+    public string $student_origin = '';
+    public string $email = '';
+    public string $phone = '';
+    public string $address = '';
+    public string $github_name = '';
+    public string $github_url = '';
 
-    public $paymentAmount;
+    public int $paymentAmount = 0;
 
-    public function mount($batchId)
+    public function mount($productId)
     {
-        $this->batchId = $batchId;
-        $this->batch = Batch::with('course')->findOrFail($batchId);
-
-        // Set price or get from batch or course
-        $this->paymentAmount = 100000;
+        $this->productId = $productId;
+        $this->paymentAmount = Product::findOrFail($productId)->price ?? 100000;
     }
-
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255',
-        'phone' => 'nullable|string|max:50',
-        'student_origin' => 'nullable|string|max:255',
-        'address' => 'nullable|string|max:255',
-        'github_name' => 'nullable|string|max:255',
-        'github_url' => 'nullable|string|max:255',
-
-    ];
-
-    public function payWithMidtrans()
-{
-    $this->validate();
-
-    // Midtrans config
-    Config::$serverKey = config('midtrans.server_key');
-    Config::$isProduction = config('midtrans.is_production');
-    Config::$isSanitized = true;
-    Config::$is3ds = true;
-
-    // Generate Snap token
-    $params = [
-        'transaction_details' => [
-            'order_id' => 'ORDER-' . strtoupper(Str::random(10)),
-            'gross_amount' => $this->paymentAmount,
-        ],
-        'customer_details' => [
-            'first_name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-        ],
-    ];
-
-    $snapToken = Snap::getSnapToken($params);
-
-    $this->dispatch('midtrans:show-snap', snapToken: $snapToken);
-}
-
 
     public function payAndRegister()
     {
-        $this->validate();
+        $this->validate([
+            'name' => 'required|string|max:255',
+            'student_id' => 'required|string|max:100',
+            'student_origin' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string',
+            'github_name' => 'required|string',
+            'github_url' => 'required|url',
+        ]);
 
-        try {
-            $transactionId = 'MIDTRANS-' . strtoupper(Str::random(10));
+        $product = Product::findOrFail($this->productId);
+        $paymentAmount = $product->price ?? 100000;
+        $orderId = 'BOOTCAMP-' . Str::upper(Str::random(10));
 
-            $plainPassword = Str::random(8);
-
-
-            $user = User::create([
-                'name' => $this->name,
+        $payload = [
+            'transaction_details' => [
+                'order_id' => $orderId,
+                'gross_amount' => $paymentAmount,
+            ],
+            'customer_details' => [
+                'first_name' => $this->name,
                 'email' => $this->email,
-                'password' => bcrypt($plainPassword),
-            ]);
-
-
-            $user->assignRole('student');
-
-
-            Student::create([
-                'user_id' => $user->id,
-                'student_id' => $this->student_id ?? null,
-                'student_origin' => $this->student_origin ?? 'kj',
                 'phone' => $this->phone,
-                'address' => $this->address,
-                'github_name' => $this->github_name,
-                'github_url' => $this->github_url,
-            ]);
+            ],
+        ];
 
+        $response = Http::withBasicAuth(config('midtrans.server_key'), '')
+            ->post('https://app.sandbox.midtrans.com/snap/v1/transactions', $payload);
 
-            Mail::to($user->email)->send(new UserRegisteredMail($user, $plainPassword));
+        if ($response->successful()) {
+            $snapToken = $response->json('token') ?? $response->json('snap_token');
 
-            $this->reset([
-                'name', 'email', 'phone',
-                'student_id', 'student_origin', 'address',
-                'github_name', 'github_url'
-            ]);
+            if (!$snapToken) {
+                $this->addError('payment', 'Snap token not received from Midtrans.');
+                return;
+            }
 
-            session()->flash('success', 'Registration and email sent successfully!');
-        } catch (\Exception $e) {
-            $this->addError('payment', 'Something went wrong: ' . $e->getMessage());
+            session()->put('registration_data', $this->only([
+                'name', 'student_id', 'student_origin', 'email',
+                'phone', 'address', 'github_name', 'github_url',
+            ]));
+
+            $this->emit('midtrans:show-snap', ['snapToken' => $snapToken]);
+        } else {
+            $this->addError('payment', 'Failed to generate payment token.');
         }
     }
 
+    public function handlePaymentSuccess($result)
+    {
+        $data = session()->pull('registration_data');
+        $product = Product::findOrFail($this->productId);
+
+        Student::create(array_merge($data, [
+            'batch_id' => $product->batch_id,
+            'payment_status' => 'paid',
+            'payment_result' => json_encode($result),
+        ]));
+
+        session()->flash('success', 'Payment successful! You have been registered.');
+        return redirect()->to('/');
+    }
 
     public function render()
     {
-        return view('livewire.show-register-page');
+        return view('livewire.show-register-page', [
+            'product' => Product::with(['batch.course', 'batch.schedules'])->findOrFail($this->productId),
+            'paymentAmount' => $this->paymentAmount,
+        ]);
     }
 }

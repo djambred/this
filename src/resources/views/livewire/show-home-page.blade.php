@@ -41,7 +41,7 @@
             </div>
             @foreach($products as $index => $product)
                 <div class="col-lg-4 col-md-6 service-item">
-                    <a class="text-black" href="{{ route('register.batch.show', $product->batch->id) }}" target="_blank" rel="noopener noreferrer">
+                    <a class="text-black" href="{{ route('register.batch', $product->batch->id) }}" target="_blank" rel="noopener noreferrer">
                         <div class="block">
                             <span class="colored-box text-center h3 mb-4">
                                 {{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}

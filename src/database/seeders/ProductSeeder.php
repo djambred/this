@@ -19,7 +19,6 @@ class ProductSeeder extends Seeder
             'user_id' => 2,
             'price' => 100.00,
             'image' => '',
-            'link' => '/',
         ]);
     }
 }
