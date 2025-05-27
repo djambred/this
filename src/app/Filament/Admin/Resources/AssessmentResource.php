@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\InstructorResource\Pages;
-use App\Filament\Admin\Resources\InstructorResource\RelationManagers;
-use App\Models\Instructor;
+use App\Filament\Admin\Resources\AssessmentResource\Pages;
+use App\Filament\Admin\Resources\AssessmentResource\RelationManagers;
+use App\Models\Assessment;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,14 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class InstructorResource extends Resource
+class AssessmentResource extends Resource
 {
-    protected static ?string $model = Instructor::class;
+    protected static ?string $model = Assessment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Learning System';
+    protected static ?string $navigationGroup = 'Bootcamp Management';
     protected static ?string $recordTitleAttribute = 'name';
-    protected static ?int $navigationSort = -2;
 
     public static function getNavigationSort(): ?int
     {
@@ -37,22 +36,9 @@ class InstructorResource extends Resource
     {
         return $form
             ->schema([
-
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->required(),
-                Forms\Components\TextInput::make('instructor_id')
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255)
-                    ->default(null),
-                Forms\Components\Textarea::make('bio')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('expertise')
-                    ->maxLength(255)
-                    ->default(null),
+                Forms\Components\TextInput::make('name')->required(),
+                Forms\Components\Textarea::make('description'),
+                Forms\Components\FileUpload::make('file')->directory('assessments/files'),
             ]);
     }
 
@@ -61,19 +47,8 @@ class InstructorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\ImageColumn::make('user.avatar_url')
-                    ->defaultImageUrl(url('https://www.gravatar.com/avatar/64e1b8d34f425d19e1ee2ea7236d3028?d=mp&r=g&s=250'))
-                    ->label('Avatar')
-                    ->circular(),
-                Tables\Columns\TextColumn::make('user.name')
-                    ->label('Name')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('instructor_id')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('phone')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('expertise')
-                    ->searchable(),
+                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('description')->limit(40),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -106,9 +81,9 @@ class InstructorResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListInstructors::route('/'),
-            'create' => Pages\CreateInstructor::route('/create'),
-            'edit' => Pages\EditInstructor::route('/{record}/edit'),
+            'index' => Pages\ListAssessments::route('/'),
+            'create' => Pages\CreateAssessment::route('/create'),
+            'edit' => Pages\EditAssessment::route('/{record}/edit'),
         ];
     }
 }

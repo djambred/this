@@ -71,6 +71,7 @@ class ScheduleResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('batch.name')
                     ->label('Batch')
                     ->sortable()

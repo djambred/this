@@ -2,9 +2,9 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Filament\Admin\Resources\LogoResource\Pages;
-use App\Filament\Admin\Resources\LogoResource\RelationManagers;
-use App\Models\Front\Logo;
+use App\Filament\Admin\Resources\CourseResource\Pages;
+use App\Filament\Admin\Resources\CourseResource\RelationManagers;
+use App\Models\Course;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -12,17 +12,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
 
-class LogoResource extends Resource
+class CourseResource extends Resource
 {
-    protected static ?string $model = Logo::class;
+    protected static ?string $model = Course::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-photo';
-    protected static ?string $navigationGroup = 'Settings';
-    protected static ?string $navigationLabel = 'Logo Manager';
-    protected static ?string $breadcrumb = 'Logo Manager';
-    protected static ?string $pluralLabel = 'Logo Setting';
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Bootcamp Management';
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function getNavigationSort(): ?int
     {
         // Auto-generate sort from navigation label
@@ -38,14 +36,13 @@ class LogoResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->required(),
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Textarea::make('description')
+                    ->columnSpanFull(),
                 Forms\Components\FileUpload::make('image')
-                    ->label('Image')
-                    ->directory('seo')
-                    ->image()
-                    ->imagePreviewHeight('150')
-                    ->maxSize(1024),
+                    ->image(),
             ]);
     }
 
@@ -54,11 +51,17 @@ class LogoResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\ImageColumn::make('image')
-                ->label('Thumbnail')
-                ->circular()
-                ->height(60),
-                Tables\Columns\TextColumn::make('title')->limit(30),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -83,9 +86,9 @@ class LogoResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLogos::route('/'),
-            'create' => Pages\CreateLogo::route('/create'),
-            'edit' => Pages\EditLogo::route('/{record}/edit'),
+            'index' => Pages\ListCourses::route('/'),
+            'create' => Pages\CreateCourse::route('/create'),
+            'edit' => Pages\EditCourse::route('/{record}/edit'),
         ];
     }
 }

@@ -2,11 +2,19 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Admin\Resources\AssessmentResource;
+use App\Filament\Admin\Resources\BatchResource;
+use App\Filament\Admin\Resources\BootcampResource;
+use App\Filament\Admin\Resources\CourseResource;
 use App\Filament\Admin\Resources\FooterLinkResource;
 use App\Filament\Admin\Resources\JargonResource;
 use App\Filament\Admin\Resources\LogoResource;
+use App\Filament\Admin\Resources\ModulesResource;
 use App\Filament\Admin\Resources\PageConfigResource;
+use App\Filament\Admin\Resources\PaymentResource;
+use App\Filament\Admin\Resources\ProductResource;
 use App\Filament\Admin\Resources\SeoResource;
+use App\Models\Product;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -58,7 +66,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label('Bootcamp'),
+                    ->label('Bootcamp Management'),
+                NavigationGroup::make()
+                    ->label('Payment Management'),
+                NavigationGroup::make()
+                    ->label('Settings'),
                 NavigationGroup::make()
                     ->label('Administration'),
 
@@ -121,6 +133,13 @@ class AdminPanelProvider extends PanelProvider
                 JargonResource::class,
                 PageConfigResource::class,
                 FooterLinkResource::class,
+                BatchResource::class,
+                CourseResource::class,
+                BootcampResource::class,
+                ModulesResource::class,
+                AssessmentResource::class,
+                ProductResource::class,
+                PaymentResource::class,
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->middleware([

@@ -22,9 +22,9 @@ class Modules extends Model
     {
         return $this->belongsTo(Course::class);
     }
-    public function instructors()
+    public function instructor()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class, 'instructor_id');
     }
     public function bootcamp()
     {

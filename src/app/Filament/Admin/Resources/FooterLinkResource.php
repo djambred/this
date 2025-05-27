@@ -66,6 +66,7 @@ class FooterLinkResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('section')->sortable(),
                 Tables\Columns\TextColumn::make('label')->label('Text'),
                 Tables\Columns\TextColumn::make('url')->label('URL'),

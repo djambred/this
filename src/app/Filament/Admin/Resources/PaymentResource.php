@@ -19,7 +19,7 @@ class PaymentResource extends Resource
     protected static ?string $model = Payment::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Sales Management';
+    protected static ?string $navigationGroup = 'Payment Management';
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?int $navigationSort = -2;
 
@@ -47,18 +47,19 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('user.name')->label('User'),
-                TextColumn::make('product.batch.name')->label('Batch'),
-                TextColumn::make('product.course.name')->label('Course'),
-                TextColumn::make('order_id')->searchable()->copyable(),
-                TextColumn::make('status')
+                Tables\Columns\TextColumn::make('id')->sortable(),
+                Tables\Columns\TextColumn::make('user.name')->label('User'),
+                Tables\Columns\TextColumn::make('product.batch.name')->label('Batch'),
+                Tables\Columns\TextColumn::make('product.course.name')->label('Course'),
+                Tables\Columns\TextColumn::make('order_id')->searchable()->copyable(),
+                Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->colors([
                         'success' => 'success',
                         'pending' => 'warning',
                         'failed' => 'danger',
                     ]),
-                TextColumn::make('created_at')->dateTime()->label('Paid At'),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Paid At'),
             ])
             ->filters([
                 //

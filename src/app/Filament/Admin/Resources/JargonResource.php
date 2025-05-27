@@ -47,6 +47,7 @@ class JargonResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('slogan')->limit(50),
             ])
             ->filters([

@@ -18,7 +18,7 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Sales Management';
+    protected static ?string $navigationGroup = 'Payment Management';
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?int $navigationSort = -2;
 
@@ -67,6 +67,7 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')->sortable(),
                 Tables\Columns\TextColumn::make('batch.name')
                     ->label('Batch Name')
                     ->sortable(),
