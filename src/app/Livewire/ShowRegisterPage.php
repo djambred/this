@@ -15,6 +15,8 @@ class ShowRegisterPage extends Component
 {
     public int $productId;
     public int $paymentAmount = 0;
+    public int $a = 0, $b = 0;
+    public int $captcha = 0;
 
     public string $name = '', $student_id = '', $student_origin = '', $email = '', $phone = '', $address = '', $github_name = '', $github_url = '';
 
@@ -22,6 +24,13 @@ class ShowRegisterPage extends Component
 
     public function mount($productId)
     {
+        $this->a = rand(1, 10);
+        $this->b = rand(1, 10);
+
+        session([
+            'captcha_a' => $this->a,
+            'captcha_b' => $this->b,
+        ]);
         $this->productId = $productId;
         $this->paymentAmount = Product::findOrFail($productId)->price ?? 100000;
     }
@@ -45,26 +54,6 @@ class ShowRegisterPage extends Component
 
         $product = Product::findOrFail($this->productId);
         $orderId = 'BOOTCAMP-' . strtoupper(Str::random(10));
-
-        // $transaction = [
-        //         'order_id' => $orderId,
-        //         'gross_amount' => $product->price,
-        //         'first_name' => $this->name,
-        //         'email' => $this->email,
-
-        // ];
-        // //dd($transaction);
-        // if (!$product->snap_token) {
-        //     # code...
-        //     $midtrans = new CreateSnapTokenService($transaction);
-        //     $snapToken = $midtrans->getSnapToken();
-        //     $product->update(['snap_token'=>$snapToken]);
-        //     //dd( $product);
-        // } else {
-        //     $snapToken = $product->snap_token;
-        // }
-        // //dd($snapToken);
-        // return $snapToken;
 
         $order = [
             'order_id' => $orderId,

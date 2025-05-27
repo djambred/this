@@ -15,13 +15,33 @@ use Spatie\Permission\Models\Role;
 
 class MidtransController extends Controller
 {
+    public function showRegistrationForm(Product $product)
+    {
+        $a = rand(1, 10);
+        $b = rand(1, 10);
+
+        session([
+            'captcha_a' => $a,
+            'captcha_b' => $b,
+        ]);
+
+        return view('livewire.show-register-page', compact('product', 'a', 'b'));
+    }
+
     public function getSnapToken(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'name' => 'required|string',
             'email' => 'required|email',
+            'captcha' => 'required|integer',
         ]);
+
+        $expectedCaptcha = session('captcha_a') + session('captcha_b');
+
+        if ((int) $request->captcha !== $expectedCaptcha) {
+            return response()->json(['error' => 'CAPTCHA is incorrect.'], 422);
+        }
 
         $product = Product::findOrFail($request->product_id);
         $orderId = 'BOOTCAMP-' . strtoupper(Str::random(10));
