@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('modules_id')->constrained()->onDelete('cascade');
             $table->foreignId('batch_id')->constrained()->onDelete('cascade');
             $table->string('location')->nullable();
             $table->date('start_time');

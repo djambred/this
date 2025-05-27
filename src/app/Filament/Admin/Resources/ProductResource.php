@@ -44,7 +44,7 @@ class ProductResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('course_id')
                     ->required()
-                    ->relationship('course', 'title')
+                    ->relationship('course', 'name')
                     ->label('Course'),
                 Forms\Components\Select::make('user_id')
                     ->label('Instructor')
@@ -70,7 +70,7 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('batch.name')
                     ->label('Batch Name')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('course.title')
+                Tables\Columns\TextColumn::make('course.name')
                     ->label('Course Name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')

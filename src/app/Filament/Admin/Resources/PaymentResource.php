@@ -49,7 +49,7 @@ class PaymentResource extends Resource
             ->columns([
                 TextColumn::make('user.name')->label('User'),
                 TextColumn::make('product.batch.name')->label('Batch'),
-                TextColumn::make('product.course.title')->label('Course'),
+                TextColumn::make('product.course.name')->label('Course'),
                 TextColumn::make('order_id')->searchable()->copyable(),
                 TextColumn::make('status')
                     ->badge()

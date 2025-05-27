@@ -37,11 +37,6 @@ class ScheduleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('modules_id')
-                    ->label('Module')
-                    ->relationship('modules', 'name')
-                    ->required(),
-
                 Forms\Components\Select::make('batch_id')
                     ->label('Batch')
                     ->relationship('batch', 'name') // assuming batch has 'name' attribute
@@ -76,11 +71,6 @@ class ScheduleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('modules.name')
-                    ->label('Module')
-                    ->sortable()
-                    ->searchable(),
-
                 Tables\Columns\TextColumn::make('batch.name')
                     ->label('Batch')
                     ->sortable()

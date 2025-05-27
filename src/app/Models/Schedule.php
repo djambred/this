@@ -12,7 +12,6 @@ class Schedule extends Model
     protected $table = 'schedules';
     protected $fillable = [
         'batch_id',
-        'module_id',
         'start_time',
         'end_time',
         'location',
