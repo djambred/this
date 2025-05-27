@@ -19,7 +19,7 @@ class PageConfigResource extends Resource
     protected static ?string $model = PageConfig::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
-    protected static ?string $navigationGroup = 'Home';
+    protected static ?string $navigationGroup = 'Settings';
     protected static ?string $navigationLabel = 'Pages Manager';
     protected static ?string $breadcrumb = 'Pages Manager';
     protected static ?string $pluralLabel = 'Pages Setting';

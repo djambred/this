@@ -34,8 +34,6 @@ class JargonResource extends Resource
         return static::getModel()::count();
     }
 
-
-
     public static function form(Form $form): Form
     {
         return $form

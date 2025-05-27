@@ -24,9 +24,15 @@ class ModulesResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?int $navigationSort = -2;
 
-    public static function canAccess(): bool
+    public static function getNavigationSort(): ?int
     {
-        return Auth::user()?->hasAnyRole(['super_admin', 'student', 'instructor']);
+        // Auto-generate sort from navigation label
+        return crc32(static::getNavigationLabel()) % 100;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 
     public static function form(Form $form): Form
