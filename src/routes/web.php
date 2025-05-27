@@ -23,6 +23,6 @@ Livewire::setScriptRoute(function ($handle) {
 Route::get('/', ShowHomePage::class )->name('home');
 
 Route::get('/register/{productId}', ShowRegisterPage::class)->name('register');
-
+Route::post('/midtrans/check-email', [\App\Http\Controllers\MidtransController::class, 'checkEmail'])->name('midtrans.check-email');
 Route::post('/midtrans/snap-token', [\App\Http\Controllers\MidtransController::class, 'getSnapToken'])->name('midtrans.snap-token');
-Route::post('/midtrans/store-result', [App\Http\Controllers\MidtransController::class, 'storeResult']);
+Route::post('/midtrans/store-result', [App\Http\Controllers\MidtransController::class, 'storeResult'])->name('midtrans.store-result');;

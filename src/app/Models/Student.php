@@ -8,6 +8,7 @@ class Student extends Model
 {
     protected $table = 'students';
     protected $fillable = [
+        //'product_id',
         'user_id',
         'student_id',
         'student_origin',
@@ -15,8 +16,10 @@ class Student extends Model
         'address',
         'github_name',
         'github_url',
+        'midtrans_result',
     ];
     protected $casts = [
+        //'product_id' => 'integer',
         'user_id' => 'integer',
         'student_id' => 'string',
         'student_origin' => 'string',
@@ -24,6 +27,7 @@ class Student extends Model
         'address' => 'string',
         'github_name' => 'string',
         'github_url' => 'string',
+        'midtrans_result' => 'array',
     ];
     public function user()
     {
