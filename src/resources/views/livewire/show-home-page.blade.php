@@ -4,6 +4,7 @@
 
     $pageconf = PageConfig::first();
     $products = Product::with(['batch.course', 'batch.schedules'])->get();
+
 @endphp
 
 <main>
@@ -49,13 +50,13 @@
 
                             @if($product->image)
                                 <img src="{{ asset('storage/' . $product->image) }}"
-                                    alt="{{ $product->course->title ?? 'Course' }}"
+                                    alt="{{ $product->course->name ?? 'Course' }}"
                                     class="img-fluid mb-3 w-100"
                                     style="height: 200px; object-fit: cover; border-radius: 0.5rem;" />
                             @endif
 
                             <h3 class="mb-3 service-title">{{ $product->batch->name ?? '-' }}</h3>
-                            <p class="mb-0 service-description">{{ $product->batch->course->title ?? 'Course' }}Course</p>
+                            <p class="mb-0 service-description">{{ $product->course->name ?? 'Course' }} Course</p>
 
                             {{-- Show related schedules --}}
                             @if($product->batch && $product->batch->schedules->isNotEmpty())

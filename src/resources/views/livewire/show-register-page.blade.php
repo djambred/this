@@ -5,7 +5,7 @@
                 <div class="col-lg-6">
                     <div class="section-title text-center mb-4">
                         <h1>{{ $product->batch->name ?? 'Bootcamp Batch' }}</h1>
-                        <p>{{ $product->course->title ?? 'Course Title' }} Course</p>
+                        <p>{{ $product->course->name ?? 'Course Title' }} Course</p>
                         <p><strong>Rp. {{ number_format($product->price, 2) }}</strong></p>
                     </div>
 

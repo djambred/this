@@ -15,11 +15,9 @@ class CourseSeeder extends Seeder
     {
         if (Course::count() == 0) {
             Course::create([
-                'title' => 'Fullstack Developer',
+                'name' => 'Fullstack Developer',
                 'description' => 'Belajar Fullstack Developer',
                 'image' => '',
-                'link' => 'https://ptjin.co.id',
-                'instructor_id' => 2,
             ]);
         }
     }

@@ -10,19 +10,11 @@ class Course extends Model
     use HasFactory;
     protected $table = 'courses';
     protected $fillable = [
-        'title',
+        'name',
         'description',
         'image',
-        'link',
-        'instructor_id',
     ];
-    protected $casts = [
-        'title' => 'string',
-        'description' => 'string',
-        'image' => 'string',
-        'link' => 'string',
-        'instructor_id' => 'integer',
-    ];
+
     public function instructor()
     {
         return $this->belongsTo(Instructor::class);
@@ -33,6 +25,10 @@ class Course extends Model
     }
     public function batches(){
         return $this->hasMany(Batch::class);
+    }
+    public function bootcamp()
+    {
+        return $this->belongsTo(Bootcamp::class);
     }
 
 }

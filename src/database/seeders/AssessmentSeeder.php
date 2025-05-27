@@ -14,11 +14,9 @@ class AssessmentSeeder extends Seeder
     public function run(): void
     {
         Assessment::firstOrCreate([
-            'github_repository' => 'bootcamp',
-            'score' => '0',
-            'status' => 'ongoing',
-            'user_id' => 3,
-            'modules_id' => 1,
+            'name' => 'Pertemuan 1',
+            'description' => '',
+            'bootcamp_id' => 1,
         ]);
     }
 }

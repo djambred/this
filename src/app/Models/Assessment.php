@@ -11,11 +11,9 @@ class Assessment extends Model
     use HasFactory;
     protected $table = 'assessments';
     protected $fillable = [
-        'github_repository',
-        'score',
-        'status',
-        'student_id',
-        'modules_id',
+        'name',
+        'description',
+        'bootcamp_id',
     ];
 
     public function user()
@@ -26,5 +24,10 @@ class Assessment extends Model
     public function modules()
     {
         return $this->belongsTo(Modules::class);
+    }
+
+    public function bootcamp()
+    {
+        return $this->belongsTo(Bootcamp::class);
     }
 }

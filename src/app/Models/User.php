@@ -74,4 +74,13 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     {
         return $this->hasMany(Payment::class);
     }
+    public function instructor()
+    {
+        return $this->hasOne(Instructor::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('super_admin'); // if using Spatie Roles
+    }
 }

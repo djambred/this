@@ -15,7 +15,6 @@ class BatchSeeder extends Seeder
     {
         Batch::firstOrCreate([
             'name' => 'Batch 1',
-            'course_id' => 1,
         ]);
     }
 }
