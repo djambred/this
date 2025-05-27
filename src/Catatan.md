@@ -10,3 +10,6 @@
 01/26
 123
 112233
+
+USE SIMULATOR
+https://simulator.sandbox.midtrans.com/

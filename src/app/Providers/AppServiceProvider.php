@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Enums\VerticalAlignment;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\ValidationException;
 use Spatie\Activitylog\Models\Activity;
@@ -42,5 +43,9 @@ class AppServiceProvider extends ServiceProvider
         MountableAction::configureUsing(function (MountableAction $action) {
             $action->modalFooterActionsAlignment(Alignment::Right);
         });
+
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
     }
 }

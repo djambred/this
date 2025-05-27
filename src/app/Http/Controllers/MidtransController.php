@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Services\CreateSnapTokenService;
 use App\Models\User;
 use App\Models\Student;
+use App\Services\WhatsAppService;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -120,7 +121,20 @@ class MidtransController extends Controller
                 'status' => $status,
             ]);
 
+            $loginUrl = url('/bootcamp');
+            $whatsapp = new WhatsAppService();
+            $whatsapp->sendMessage(
+                $request->phone,
+                    "Hi {$user->name}, welcome to Bootcamp!  ^=^n^s\n\n" .
+                    "Login Details:\n" .
+                    " ^=^s  Email: {$user->email}\n" .
+                    " ^=^t^q Password: {$plainPassword}\n\n" .
+                    " ^=^q^i Login here: {$loginUrl}"
+                );
+
+            // Send email with login details
             Mail::to($user->email)->send(new SendLoginDetailsMail($user, $plainPassword));
+
 
             return response()->json(['message' => 'Registration successful! Please check your email.']);
         } catch (\Throwable $e) {
