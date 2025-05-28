@@ -63,9 +63,25 @@ class MidtransController extends Controller
         ]);
     }
 
+    public function normalizePhoneNumber($phone)
+    {
+        // Remove all non-numeric characters
+        $phone = preg_replace('/[^0-9]/', '', $phone);
+
+        // If number starts with 0, replace with +62
+        if (substr($phone, 0, 1) === '0') {
+            $phone = '+62' . substr($phone, 1);
+        } elseif (substr($phone, 0, 2) === '62') {
+            $phone = '+' . $phone;
+        }
+
+        return $phone;
+    }
+
     // Store the payment & user registration result after payment success
     public function storeResult(Request $request)
     {
+
         try {
             $request->validate([
                 'email' => 'required|email',
@@ -84,6 +100,8 @@ class MidtransController extends Controller
                 return response()->json(['message' => 'Email already registered.'], 409);
             }
 
+            $phone = $this->normalizePhoneNumber($request->phone);
+
             $plainPassword = Str::random(8);
             $hashedPassword = Hash::make($plainPassword);
 
@@ -99,7 +117,7 @@ class MidtransController extends Controller
                 'user_id' => $user->id,
                 'student_id' => $request->student_id,
                 'student_origin' => $request->student_origin,
-                'phone' => $request->phone,
+                'phone' => $phone,
                 'address' => $request->address,
                 'github_name' => $request->github_name,
                 'github_url' => $request->github_url,
@@ -124,12 +142,12 @@ class MidtransController extends Controller
             $loginUrl = url('/bootcamp');
             $whatsapp = new WhatsAppService();
             $whatsapp->sendMessage(
-                $request->phone,
-                    "Hi {$user->name}, welcome to Bootcamp!  ^=^n^s\n\n" .
+                $phone,
+                    "Hi {$user->name}, welcome to Bootcamp! 🎓\n\n" .
                     "Login Details:\n" .
-                    " ^=^s  Email: {$user->email}\n" .
-                    " ^=^t^q Password: {$plainPassword}\n\n" .
-                    " ^=^q^i Login here: {$loginUrl}"
+                    "📧 Email: {$user->email}\n" .
+                    "🔑 Password: {$plainPassword}\n\n" .
+                    "👉 Login here: {$loginUrl}"
                 );
 
             // Send email with login details

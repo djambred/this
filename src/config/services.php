@@ -40,4 +40,10 @@ return [
         'client_key' => env('MIDTRANS_CLIENT_KEY'),
     ],
 
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
+    ],
+
 ];

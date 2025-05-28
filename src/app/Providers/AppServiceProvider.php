@@ -44,8 +44,8 @@ class AppServiceProvider extends ServiceProvider
             $action->modalFooterActionsAlignment(Alignment::Right);
         });
 
-        if ($this->app->environment('production')) {
-            URL::forceScheme('https');
+        if (app()->environment('production')) {
+                URL::forceScheme('https');
         }
     }
 }
